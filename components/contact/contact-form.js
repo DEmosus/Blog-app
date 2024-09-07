@@ -86,7 +86,7 @@ export default function ContactForm() {
   return (
     <section className={styles.contact}>
       <h1>How can I help you?</h1>
-      <form className={styles.form} >
+      <form className={styles.form} onSubmit={sendMessageHandler}>
         <div className={styles.controls}>
           <div className={styles.control}>
             <label htmlFor="email">Your Email</label>
@@ -121,7 +121,7 @@ export default function ContactForm() {
         </div>
 
         <div className={styles.actions}>
-          <button onClick={sendMessageHandler}>Send Message</button>
+          <button>Send Message</button>
         </div>
       </form>
       {notification && (
