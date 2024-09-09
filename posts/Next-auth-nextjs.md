@@ -2,7 +2,7 @@
 title: Next-auth js
 excerpt: Next-auth js is an open-source authentication solution tailored for Next.js applications
 image: next-auth.jpg
-isFeatured: false
+isFeatured: true
 date: '2024-10-30'
 ---
 
