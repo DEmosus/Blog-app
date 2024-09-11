@@ -1,12 +1,12 @@
 ---
-title: Understanding Key Concepts in Node.js 
+title: Understanding Web server and file I/O in Node.js 
 excerpt: Node.js is a powerful platform for building scalable network applications. Its ability to handle streams efficiently, along with its versatile handling of HTTP requests and responses, makes it a popular choice for web development.
 image: node.png
 isFeatured: false
 date: '2024-09-10'
 ---
 
-# Understanding Key Concepts in Node.js and Web Development
+# Understanding Web server and file I/O in Node.js 
 
 Node.js is a powerful platform for building scalable network applications. Its ability to handle streams efficiently, along with its versatile handling of HTTP requests and responses, makes it a popular choice for web development. In this blog, we’ll dive into several crucial concepts, including streams, HTTP methods, and CORS, to provide a comprehensive understanding of how they work together in a Node.js environment.
 
