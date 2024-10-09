@@ -2,6 +2,7 @@ import Head from "next/head";
 import Hero from "@/components/home-page/hero";
 import FeaturedPosts from "@/components/home-page/featured-post";
 import { getFeaturedPosts } from "@/lib/posts-utils";
+// require("dotenv").config();
 
 export default function Home(props) {
   return (

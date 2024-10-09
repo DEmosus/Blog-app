@@ -16,8 +16,8 @@ export default function Hero() {
       </div>
       <h1>Hello, I&#39;m Isaac</h1>
       <p>
-        Web development blogs - learn more about web description and new
-        techonologies in computer science
+        I blog about Web development - learn more about web development and new
+        techonologies in computer science.
       </p>
     </section>
   );

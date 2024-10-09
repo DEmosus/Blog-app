@@ -3,7 +3,7 @@ title: Next-auth js
 excerpt: Next-auth js is an open-source authentication solution tailored for Next.js applications
 image: next-auth.jpg
 isFeatured: true
-date: '2024-10-30'
+date: "2024-10-30"
 ---
 
 # Comprehensive Guide to Using NextAuth.js in Next.js Applications
@@ -30,24 +30,24 @@ npm install next-auth
 
 ```
 
-### 2.  Adding a User Signup API Route
+### 2. Adding a User Signup API Route
 
 Create a file named signup.js in the pages/api/auth directory:
 
 ```js
 // pages/api/auth/signup.js
-import { hash } from 'bcryptjs';
-import { MongoClient } from 'mongodb';
+import { hash } from "bcryptjs";
+import { MongoClient } from "mongodb";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(405).end(); // Method Not Allowed
   }
 
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: 'Missing email or password' });
+    return res.status(400).json({ message: "Missing email or password" });
   }
 
   const hashedPassword = await hash(password, 12);
@@ -55,41 +55,41 @@ export default async function handler(req, res) {
   const client = await MongoClient.connect(process.env.MONGODB_URI);
   const db = client.db();
 
-  const existingUser = await db.collection('users').findOne({ email });
+  const existingUser = await db.collection("users").findOne({ email });
 
   if (existingUser) {
     client.close();
-    return res.status(422).json({ message: 'User already exists' });
+    return res.status(422).json({ message: "User already exists" });
   }
 
-  await db.collection('users').insertOne({
+  await db.collection("users").insertOne({
     email,
     password: hashedPassword,
   });
 
   client.close();
-  res.status(201).json({ message: 'User created' });
+  res.status(201).json({ message: "User created" });
 }
-
 ```
+
 ### 3. Sending Signup Requests from the Frontend
 
 Create a signup form component:
 
 ```js
 // components/SignupForm.js
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function SignupForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
@@ -126,35 +126,37 @@ Create a file named [...nextauth].js in the pages/api/auth directory:
 
 ```js
 // pages/api/auth/[...nextauth].js
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { verify } from 'bcryptjs';
-import { MongoClient } from 'mongodb';
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { verify } from "bcryptjs";
+import { MongoClient } from "mongodb";
 
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         const client = await MongoClient.connect(process.env.MONGODB_URI);
         const db = client.db();
 
-        const user = await db.collection('users').findOne({ email: credentials.email });
+        const user = await db
+          .collection("users")
+          .findOne({ email: credentials.email });
 
         if (!user) {
           client.close();
-          throw new Error('No user found');
+          throw new Error("No user found");
         }
 
         const isValid = await verify(credentials.password, user.password);
 
         if (!isValid) {
           client.close();
-          throw new Error('Invalid password');
+          throw new Error("Invalid password");
         }
 
         client.close();
@@ -182,13 +184,16 @@ export default NextAuth({
 
 ### 5. Managing Active Sessions on the Frontend
 
-Wrap your application with SessionProvider in your _app.js or _app.tsx file:
+Wrap your application with SessionProvider in your \_app.js or \_app.tsx file:
 
 ```js
 // pages/_app.js
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider } from "next-auth/react";
 
-export default function App({ Component, pageProps: { session, ...pageProps } }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
     <SessionProvider session={session}>
       <Component {...pageProps} />
@@ -203,7 +208,7 @@ Create a logout button component:
 
 ```js
 // components/LogoutButton.js
-import { signOut } from 'next-auth/react';
+import { signOut } from "next-auth/react";
 
 export default function LogoutButton() {
   return <button onClick={() => signOut()}>Sign Out</button>;
@@ -211,35 +216,37 @@ export default function LogoutButton() {
 ```
 
 ### 7. Adding Client-Side Page Guards (Route Protection)
+
 Use the useSession hook to protect client-side routes:
 
 ```js
 // components/ProtectedPage.js
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 
 export default function ProtectedPage() {
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
       // Redirect to sign-in page
-      window.location.href = '/api/auth/signin';
+      window.location.href = "/api/auth/signin";
     },
   });
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   return <p>Welcome, {session.user.email}</p>;
 }
 ```
+
 ### 8. Adding Server-Side Page Guards
 
 Use the getSession method for server-side protection:
 
 ```js
 // pages/protected.js
-import { getSession } from 'next-auth/react';
+import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
@@ -247,7 +254,7 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
         permanent: false,
       },
     };
@@ -264,11 +271,12 @@ export default function ProtectedPage({ session }) {
 ```
 
 ### 9. Protecting the Auth Page
+
 Redirect authenticated users away from the auth page:
 
 ```js
 // pages/auth.js
-import { getSession } from 'next-auth/react';
+import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
@@ -276,7 +284,7 @@ export async function getServerSideProps(context) {
   if (session) {
     return {
       redirect: {
-        destination: '/',
+        destination: "/",
         permanent: false,
       },
     };
@@ -291,17 +299,18 @@ export default function AuthPage() {
   return <div>Sign In or Sign Up</div>;
 }
 ```
+
 ### 10. Adding Change Password Logic
 
 Create a change password API route:
 
 ```js
 // pages/api/auth/change-password.js
-import { hash, compare } from 'bcryptjs';
-import { MongoClient } from 'mongodb';
+import { hash, compare } from "bcryptjs";
+import { MongoClient } from "mongodb";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(405).end(); // Method Not Allowed
   }
 
@@ -310,32 +319,33 @@ export default async function handler(req, res) {
   const client = await MongoClient.connect(process.env.MONGODB_URI);
   const db = client.db();
 
-  const user = await db.collection('users').findOne({ email });
+  const user = await db.collection("users").findOne({ email });
 
   if (!user) {
     client.close();
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: "User not found" });
   }
 
   const isValid = await compare(oldPassword, user.password);
 
   if (!isValid) {
     client.close();
-    return res.status(403).json({ message: 'Invalid old password' });
+    return res.status(403).json({ message: "Invalid old password" });
   }
 
   const hashedPassword = await hash(newPassword, 12);
 
-  await db.collection('users').updateOne(
-    { email },
-    { $set: { password: hashedPassword } }
-  );
+  await db
+    .collection("users")
+    .updateOne({ email }, { $set: { password: hashedPassword } });
 
   client.close();
-  res.status(200).json({ message: 'Password updated' });
+  res.status(200).json({ message: "Password updated" });
 }
 ```
+
 ### 11. Sending Change Password Request from the Frontend
+
 Create a change password form component:
 
 ```js
@@ -349,4 +359,3 @@ export default function ChangePasswordForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 ```
-

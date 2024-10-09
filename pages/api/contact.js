@@ -14,7 +14,7 @@ export default async function handler(req, res) {
         };
 
         let client;
-    
+        console.log(process.env.NEXT_PUBLIC_MONGODB_PASSWORD)
         const connectionString = `mongodb+srv://${process.env.NEXT_PUBLIC_MONGODB_USERNAME}:${process.env.NEXT_PUBLIC_MONGODB_PASSWORD}@${process.env.NEXT_PUBLIC_MONGODB_CLUSTERNAME}.z2beq.mongodb.net/${process.env.NEXT_PUBLIC_MONDODB_DATABASE}`
 
         try {
